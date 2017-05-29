@@ -18,12 +18,6 @@ script :
  - zip -d fr.lip6.move.gal.itscl.product-macosx.cocoa.x86_64.zip '*its-*-win64' '*its-*-linux32' '*its-*-linux64'
  - zip -d fr.lip6.move.gal.itscl.product-win32.win32.x86_64.zip '*its-*-linux64' '*its-*-linux32' '*its-*-Darwin'
  - cd ..
- - ./install_eclipse.sh 
- - cd eclipse/plugins/fr.lip6.move.gal.itstools.binaries_1.0.0.*/bin/
- - \rm *Darwin* *linux32* *win64*
- - cd -
- - tar czf itscl_linux.tgz eclipse/ runeclipse.sh
- - mv itscl_linux.tgz website/
  - ls -lah website/
 
 deploy:
@@ -34,6 +28,4 @@ deploy:
   on:
     branch: master
    
-after_deploy:
-  - curl -s -X POST -H "Content-Type:application/json" -H "Accept:application/json"   -H "Travis-API-Version:3" -H "Authorization:token $APITOKEN" -d '{"request":{"message":"Triggered by ITS Tools build.","branch":"master"}}' https://api.travis-ci.org/repo/yanntm%2FITS-Tools-pnmcc/requests
-    
+
