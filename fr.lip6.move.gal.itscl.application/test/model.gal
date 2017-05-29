@@ -1,0 +1,96 @@
+
+gal bridge($fastest=5, $fast=10, $slow=20, $slowest=25){
+  typedef Torchid_t= 0..0 ;
+  typedef Soldierid_t= 0..3 ;
+  int glob_range_L = 0;
+  int glob_clock_time = 0;
+  /**Torch states [ 0=one, 1=S0, 2=free, 3=tw]  */
+  array [1]Torch_state = (2 );
+  /**Soldier states [ 0=S0, 1=safe, 2=S1, 3=unsaf]  */
+  array [4]Soldier_state = (3, 3, 3, 3 );
+  array [4]Soldier_delay = ($fastest, $fast, $slow, $slowest );
+  array [4]Soldier_clock_y = (0, 0, 0, 0 );
+  /** To represent channel take */
+  transition chantake [ true ] {
+    self."Sendtake";
+    self."Recvtake";
+  }
+  /** To represent channel release */
+  transition chanrelease [ true ] {
+    self."Sendrelease";
+    self."Recvrelease";
+  }
+  transition elapse [ true ] {
+    for ($Torchid : Torchid_t) {
+      self."passUrgentTorch"( $Torchid );
+    }
+    for ($Soldierid : Soldierid_t) {
+      self."updateClockSoldiery"( $Soldierid );
+    }
+  }
+  /** State one is not urgent. */
+  transition passUrgentTorch_one(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 0 ] label "passUrgentTorch" ($Torchid){
+  }
+  /** State free is not urgent. */
+  transition passUrgentTorch_free(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 2 ] label "passUrgentTorch" ($Torchid){
+  }
+  /** State two is not urgent. */
+  transition passUrgentTorch_two(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 3 ] label "passUrgentTorch" ($Torchid){
+  }
+  transition t1Torchfree_S0(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 2 ] label "Recvtake" {
+    Torch_state[ $Torchid ] = 1    ;
+  }
+  transition t2TorchS0_one(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 1 ] {
+    Torch_state[ $Torchid ] = 0    ;
+  }
+  transition t3TorchS0_two(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 1 ] label "Recvtake" {
+    Torch_state[ $Torchid ] = 3    ;
+  }
+  transition t4Torchone_free(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 0 ] label "Recvrelease" {
+    Torch_state[ $Torchid ] = 2    ;
+    glob_range_L = ( 1 - glob_range_L )    ;
+  }
+  transition t5Torchtwo_one(Torchid_t $Torchid) [ Torch_state[ $Torchid ] == 3 ] label "Recvrelease" {
+    Torch_state[ $Torchid ] = 0    ;
+  }
+  /** State S0 has a max tracking value. */
+  transition updateClockSoldiery_S0(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 0 ] label "updateClockSoldiery" ($Soldierid){
+    if (!Soldier_clock_y[ $Soldierid ] >= Soldier_delay[ $Soldierid ]) {
+      Soldier_clock_y[ $Soldierid ] += 1      ;
+    }
+  }
+  /** State Soldier safe is inactive. */
+  transition updateClockSoldiery_safe(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 1 ] label "updateClockSoldiery" ($Soldierid){
+  }
+  /** State S1 has a max tracking value. */
+  transition updateClockSoldiery_S1(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 2 ] label "updateClockSoldiery" ($Soldierid){
+    if (!Soldier_clock_y[ $Soldierid ] >= Soldier_delay[ $Soldierid ]) {
+      Soldier_clock_y[ $Soldierid ] += 1      ;
+    }
+  }
+  /** State Soldier unsafe is inactive. */
+  transition updateClockSoldiery_unsafe(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 3 ] label "updateClockSoldiery" ($Soldierid){
+  }
+  transition t1SoldierS0_safe(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 0 && Soldier_clock_y[ $Soldierid ] >= Soldier_delay[ $Soldierid ] ] label "Sendrelease" {
+    Soldier_state[ $Soldierid ] = 1    ;
+    Soldier_clock_y[ $Soldierid ] = 0    ;
+  }
+  transition t2Soldiersafe_S1(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 1 && glob_range_L == 1 ] label "Sendtake" {
+    Soldier_state[ $Soldierid ] = 2    ;
+    Soldier_clock_y[ $Soldierid ] = 0    ;
+  }
+  transition t3SoldierS1_unsafe(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 2 && Soldier_clock_y[ $Soldierid ] >= Soldier_delay[ $Soldierid ] ] label "Sendrelease" {
+    Soldier_state[ $Soldierid ] = 3    ;
+    Soldier_clock_y[ $Soldierid ] = 0    ;
+  }
+  transition t4Soldierunsafe_S0(Soldierid_t $Soldierid) [ Soldier_state[ $Soldierid ] == 3 && glob_range_L == 0 ] label "Sendtake" {
+    Soldier_state[ $Soldierid ] = 0    ;
+    Soldier_clock_y[ $Soldierid ] = 0    ;
+  }
+}
+
+
+property safe [reachable] : 
+   Soldier_state[0]==1 &&  Soldier_state[1]==1 &&  Soldier_state[2]==1 &&  Soldier_state[3]==1 
+;
+ 
