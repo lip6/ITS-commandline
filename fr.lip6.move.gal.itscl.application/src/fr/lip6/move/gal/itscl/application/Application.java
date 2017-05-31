@@ -21,7 +21,7 @@ import fr.lip6.move.gal.itstools.Runner;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 import fr.lip6.move.serialization.SerializationUtil;
 
-public class Application implements IApplication {
+public class Application implements IApplication, ItsSolver {
 	private static final String APPARGS = "application.args";
 	private static final String INPUT_FILE = "-i";
 	private static final String INPUT_TYPE = "-t";
@@ -34,13 +34,25 @@ public class Application implements IApplication {
 	 */
 	public Object start(IApplicationContext context) throws Exception {
 		
+		                     
 		String [] args = (String[]) context.getArguments().get(APPARGS);
+		Problem p = loadModel(args);
+		SolverSeq s = (SolverSeq) new ItsSolver();
+		ResultProblem res = s.solve(p);
+		System.out.println(res);
+		return IApplication.EXIT_OK;
+	}
+	
+	
+	public Problem loadModel(String[]args) throws IOException{
 		
-		String inputff = null;
+		String inputff = null;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 		String inputType = null;
-		
+	
 		Tool tool = Tool.reach;
 		boolean doIts = false;
+		
+		System.out.println("Hello world.");
 		
 		for (int i=0; i < args.length ; i++) {
 			if (INPUT_FILE.equals(args[i])) {
@@ -56,15 +68,15 @@ public class Application implements IApplication {
 			} else if (LTL_EXAM.equals(args[i])) {
 				tool = Tool.ltl;
 				doIts = true;
-//			} else if (LTSMINPATH.equals(args[i])) {
-//				ltsminpath = args[++i];
-//				doLTSmin = true;
-//			} else if (ITS.equals(args[i])) {
-//				doITS = true;
-//			} else if (disablePOR.equals(args[i])) {
-//				doPOR = false;
-//			} else if (ONLYGAL.equals(args[i])) {
-//				onlyGal = true;
+	//		} else if (LTSMINPATH.equals(args[i])) {
+	//			ltsminpath = args[++i];
+	//			doLTSmin = true;
+	//		} else if (ITS.equals(args[i])) {
+	//			doITS = true;
+	//		} else if (disablePOR.equals(args[i])) {
+	//			doPOR = false;
+	//		} else if (ONLYGAL.equals(args[i])) {
+	//			onlyGal = true;
 			}
 		}
 		
@@ -80,8 +92,9 @@ public class Application implements IApplication {
 		}
 		String pwd = ff.getParent();
 		String modelName = ff.getName().replace(".gal", "");
+	
 		SerializationUtil.setStandalone(true);
-		
+	
 		long time = System.currentTimeMillis();
 		Specification spec = SerializationUtil.fileToGalSystem(inputff);		
 		System.out.println("Successfully read input file : " + inputff +" in " + (time - System.currentTimeMillis()) + " ms.");
@@ -93,7 +106,7 @@ public class Application implements IApplication {
 				System.err.println("Could not set up work folder in "+cwd);
 			}
 		}				
-
+	
 		time = System.currentTimeMillis();
 		GALRewriter.flatten(spec, true);
 		System.out.println("Simplifications done in " + (time - System.currentTimeMillis()) + " ms.");
@@ -101,9 +114,9 @@ public class Application implements IApplication {
 		time = System.currentTimeMillis();
 		String outpath = cwd+"/"+ modelName + ".gal";
 		outputGalFile(spec, outpath);
-		
+	
 		CommandLine cl = buildCommandLine(outpath, tool);
-		
+	
 		if (tool == Tool.reach) {
 			spec.getProperties().removeIf( (p) -> ! (p.getBody() instanceof SafetyProp) );
 			String proppath = cwd + "/" +modelName  +".prop";
@@ -129,12 +142,14 @@ public class Application implements IApplication {
 		if (cl != null) {
 			cl.setWorkingDir(new File(cwd));
 		}
-		System.out.println("Built GAL and proeprty files in "+ (time - System.currentTimeMillis()) + " ms.");
-		
-		Runner.runTool(3500, cl, System.out, true);
-		
-		return IApplication.EXIT_OK;
+		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
+	
+		return new Problem(cl);
 	}
+	
+	
+	
+	
 	
 	public void outputGalFile(Specification spec, String outpath) throws IOException {
 		if (! spec.getProperties().isEmpty()) {
