@@ -36,10 +36,6 @@ public class Application1 implements IApplication {
 		
 		String [] args = (String[]) context.getArguments().get(APPARGS);
 		
-		System.out.println(" here we are ");
-		for(int i =0;i<args.length;i++)
-			System.out.println(args[i]);
-
 		
 		String inputff = null;
 		String inputType = null;
