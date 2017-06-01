@@ -1,7 +1,11 @@
 package fr.lip6.move.gal.itscl.application;
 
-public class ItsSolver e {
+public class  ItsSolver implements ISolver  {
 	
-	public ResultProblem solve(Problem p);
+	synchronized public ResolveProblem solve(Problem p){
+		
+		return new ResolveProblem(ResolveProblem.UNKNOWN);
 
+	}
+	
 }

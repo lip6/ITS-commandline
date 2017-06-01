@@ -75,6 +75,9 @@ public class Application1 implements IApplication {
 			}
 		}
 		
+		System.out.println("hi____________________");
+
+		
 		if (inputff == null) {
 			System.err.println("Please provide input file with -i option");
 			return null;
@@ -100,7 +103,7 @@ public class Application1 implements IApplication {
 				System.err.println("Could not set up work folder in "+cwd);
 			}
 		}				
-
+	
 		time = System.currentTimeMillis();
 		GALRewriter.flatten(spec, true);
 		System.out.println("Simplifications done in " + (time - System.currentTimeMillis()) + " ms.");

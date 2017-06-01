@@ -21,7 +21,7 @@ import fr.lip6.move.gal.itstools.Runner;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 import fr.lip6.move.serialization.SerializationUtil;
 
-public class Application implements IApplication, ItsSolver {
+public class Application implements IApplication {
 	private static final String APPARGS = "application.args";
 	private static final String INPUT_FILE = "-i";
 	private static final String INPUT_TYPE = "-t";
@@ -29,6 +29,7 @@ public class Application implements IApplication, ItsSolver {
 	private static final String CTL_EXAM = "-ctl";
 	private static final String LTL_EXAM = "-ltl";
 	
+	private Tool tool = Tool.reach;
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
@@ -37,11 +38,13 @@ public class Application implements IApplication, ItsSolver {
 		                     
 		String [] args = (String[]) context.getArguments().get(APPARGS);
 		Problem p = loadModel(args);
-		SolverSeq s = (SolverSeq) new ItsSolver();
-		ResultProblem res = s.solve(p);
+		System.out.println("hallo");
+		SolverSeq s =  new SolverSeq();
+		ResolveProblem res = s.solve(p);
 		System.out.println(res);
 		return IApplication.EXIT_OK;
 	}
+	
 	
 	
 	public Problem loadModel(String[]args) throws IOException{
@@ -49,7 +52,6 @@ public class Application implements IApplication, ItsSolver {
 		String inputff = null;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 		String inputType = null;
 	
-		Tool tool = Tool.reach;
 		boolean doIts = false;
 		
 		System.out.println("Hello world.");
@@ -96,9 +98,17 @@ public class Application implements IApplication, ItsSolver {
 		SerializationUtil.setStandalone(true);
 	
 		long time = System.currentTimeMillis();
-		Specification spec = SerializationUtil.fileToGalSystem(inputff);		
+		//parse l'entrée
+		Specification spec = SerializationUtil.fileToGalSystem(inputff);
+		System.out.println("im here____________________k");
+		for (Property p :spec.getProperties()) {
+			System.out.println(p.getName() + p.getBody().eClass().getName());
+		}
+		
 		System.out.println("Successfully read input file : " + inputff +" in " + (time - System.currentTimeMillis()) + " ms.");
 		
+		
+		// Traitement du problème : transformations + simplifications
 		String cwd = pwd + "/work";
 		File fcwd = new File(cwd);
 		if (! fcwd.exists()) {
@@ -106,6 +116,8 @@ public class Application implements IApplication, ItsSolver {
 				System.err.println("Could not set up work folder in "+cwd);
 			}
 		}				
+		
+		
 	
 		time = System.currentTimeMillis();
 		GALRewriter.flatten(spec, true);
@@ -113,8 +125,10 @@ public class Application implements IApplication, ItsSolver {
 		
 		time = System.currentTimeMillis();
 		String outpath = cwd+"/"+ modelName + ".gal";
-		outputGalFile(spec, outpath);
-	
+		
+		// On produit un fichier de modèle pour l'outil ligne de commande
+		outputGalFile(spec, outpath);	
+		
 		CommandLine cl = buildCommandLine(outpath, tool);
 	
 		if (tool == Tool.reach) {
@@ -144,7 +158,6 @@ public class Application implements IApplication, ItsSolver {
 		}
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
 	
-		return new Problem(cl);
 	}
 	
 	
