@@ -2,7 +2,7 @@ package fr.lip6.move.gal.itscl.application;
 
 import fr.lip6.move.gal.itstools.CommandLine;
 
-public class  ItsSolver implements ISolver  {
+public class  ItsSolver extends SolverObservable implements ISolver  {
 	
 	private final CommandLine cl;
 	private final Problem p;
@@ -15,13 +15,8 @@ public class  ItsSolver implements ISolver  {
 		this.p=p;
 	}
 
-<<<<<<< HEAD
 	public ResultP solve(Problem p){
 		return result;
-=======
-	public void solve(){
-		
->>>>>>> refs/heads/test
 	}
 
 	public CommandLine getCmd() {

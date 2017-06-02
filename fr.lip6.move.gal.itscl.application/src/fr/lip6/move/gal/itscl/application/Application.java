@@ -32,7 +32,6 @@ public class Application implements IApplication {
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
-	@SuppressWarnings("unused")
 	public Object start(IApplicationContext context) throws Exception {
 		
 		String [] args = (String[]) context.getArguments().get(APPARGS);
@@ -102,17 +101,21 @@ public class Application implements IApplication {
 		System.out.println("Simplifications done in " + (time - System.currentTimeMillis()) + " ms.");
 		
 		time = System.currentTimeMillis();
-		CommandLine cl= getCmdLine(spec,p.getCwd(),modelName,tool);
+		CommandLine cl= getCmdLine(spec,p.getPwd(),modelName,tool);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
 		
 		SolverSeq s = new SolverSeq(p,cl);
+		s.attach(new ISolverObserver() {
+			
+			@Override
+			public void notifyResult(ResultP res) {
+				System.out.println("");
+			}
+		});
 		runnerSeq= new Thread(s);
 		runnerSeq.start();
 		runnerSeq.join();
-		ResultP res = s.getResult();
-		System.out.println("HIHIH___DONE");
 
-		System.out.println(res);
 	
 		return IApplication.EXIT_OK;
 	}

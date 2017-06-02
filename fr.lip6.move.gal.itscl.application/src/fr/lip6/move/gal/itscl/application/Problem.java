@@ -3,17 +3,17 @@ package fr.lip6.move.gal.itscl.application;
 import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 
-public class Problem{
+public class Problem implements IProblem{
 
 	private Specification spec;
 	private Tool tool;
-	private String cwd;
+	private String pwd;
 
 	
-	public Problem(Specification spec, Tool tool,String cwd) {
+	public Problem(Specification spec, Tool tool,String pwd) {
 		this.spec = spec;
 		this.tool = tool;
-		this.cwd=cwd;
+		this.pwd=pwd;
 	}
 
 	public Specification getSpec() {
@@ -24,8 +24,8 @@ public class Problem{
 		return tool;
 	}
 
-	public String getCwd() {
-		return cwd;
+	public String getPwd() {
+		return pwd;
 	}
 
 }
