@@ -4,20 +4,35 @@ import fr.lip6.move.gal.itstools.CommandLine;
 
 public class  ItsSolver implements ISolver  {
 	
-	private final CommandLine cmd;
+	private final CommandLine cl;
+	private final Problem p;
+	private ResultP result=new ResultP(ResultP.UNKNOWN);
+
 	
-	public ItsSolver(CommandLine cmd){
-		this.cmd=cmd;
+	
+	public ItsSolver(Problem p,CommandLine cl){
+		this.cl=cl;
+		this.p=p;
 	}
 
-	synchronized public ResultP solve(Problem p){
-		
-		return new ResultP(ResultP.UNKNOWN);
-
+	public ResultP solve(Problem p){
+		return result;
 	}
 
 	public CommandLine getCmd() {
-		return cmd;
+		return cl;
+	}
+
+	public Problem getP() {
+		return p;
+	}
+
+	public ResultP getResult() {
+		return result;
 	}
 	
+	public void setResult(ResultP res){
+		result=res;
+	}
+
 }
