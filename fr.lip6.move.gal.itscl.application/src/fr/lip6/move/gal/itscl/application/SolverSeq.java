@@ -8,26 +8,26 @@ import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.ProcessController.TimeOutException;
 import fr.lip6.move.gal.itstools.Runner;
 
-public class SolverSeq extends ItsSolver{
+public class SolverSeq extends ItsSolver implements Runnable{
 	
-
-	public SolverSeq(CommandLine cmd) {
-		super(cmd);
+	
+	
+	public SolverSeq(Problem p, CommandLine cl) {
+		super(p, cl);
 	}
 
-	synchronized public ResultP solve(Problem p){
-		try {
-			
-			IStatus st = Runner.runTool(3500, this.getCmd(), System.out, true);
-			if(st.isOK())
-				return new ResultP(ResultP.OK);
-			
-		} catch (IOException | TimeOutException e) {
-			return new ResultP(ResultP.KO);
-		}
-
-		return new ResultP(ResultP.UNKNOWN);
-		
+	public void run(){
+		synchronized(getP()){
+			try {
+					IStatus st = Runner.runTool(3500, getCmd(), System.out, true);
+					if(st.isOK())
+						setResult(new ResultP(ResultP.OK));
+					
+				} catch (IOException | TimeOutException e) {
+					setResult(new ResultP(ResultP.KO));
+				}
+				
+		}	
 	}
 	
 	

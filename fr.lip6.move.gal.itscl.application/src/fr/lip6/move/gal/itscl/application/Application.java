@@ -27,6 +27,8 @@ public class Application implements IApplication {
 	private static final String CTL_EXAM = "-ctl";
 	private static final String LTL_EXAM = "-ltl";
 	
+	private Thread runnerSeq;
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
@@ -103,9 +105,12 @@ public class Application implements IApplication {
 		CommandLine cl= getCmdLine(spec,p.getCwd(),modelName,tool);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
 		
-		SolverSeq s = new SolverSeq(cl);
-		ResultP res = s.solve(p);
-		System.out.println("HIHIH___DONE");
+		SolverSeq s = new SolverSeq(p,cl);
+		runnerSeq= new Thread(s);
+		runnerSeq.start();
+		runnerSeq.join();
+		ResultP res = s.getResult();
+		System.out.println("YASS___DONE");
 
 		System.out.println(res);
 	
