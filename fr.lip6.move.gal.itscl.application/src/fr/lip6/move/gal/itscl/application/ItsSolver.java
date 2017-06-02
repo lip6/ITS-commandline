@@ -15,8 +15,13 @@ public class  ItsSolver implements ISolver  {
 		this.p=p;
 	}
 
+<<<<<<< HEAD
 	public ResultP solve(Problem p){
 		return result;
+=======
+	public void solve(){
+		
+>>>>>>> refs/heads/test
 	}
 
 	public CommandLine getCmd() {

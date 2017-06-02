@@ -91,5 +91,10 @@ gal bridge($fastest=5, $fast=10, $slow=20, $slowest=25){
 
 
 property safe [reachable] : 
+<<<<<<< HEAD
    Soldier_state[0]==1 &&  Soldier_state[1]==1 &&  Soldier_state[2]==1 &&  Soldier_state[3]==1;
+=======
+   Soldier_state[0]==1 &&  Soldier_state[1]==1 &&  Soldier_state[2]==1 &&  Soldier_state[3]==1 
+;
+>>>>>>> refs/heads/test
  
