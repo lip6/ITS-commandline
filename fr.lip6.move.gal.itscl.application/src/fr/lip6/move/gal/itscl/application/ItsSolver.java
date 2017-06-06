@@ -6,11 +6,12 @@ public class  ItsSolver extends SolverObservable implements ISolver  {
 	
 	private final CommandLine cl;
 	protected final Problem p;
+	protected final SolverObservable obs;
 	
-	
-	public ItsSolver(Problem p,CommandLine cl){
+	public ItsSolver(Problem p,CommandLine cl, SolverObservable so){
 		this.cl=cl;
 		this.p=p;
+		this.obs=so;
 	}
 
 	public Thread solve(){
@@ -23,6 +24,10 @@ public class  ItsSolver extends SolverObservable implements ISolver  {
 	
 	public Problem getProblem(){
 		return p;
+	}
+
+	public SolverObservable getObs() {
+		return obs;
 	}
 
 

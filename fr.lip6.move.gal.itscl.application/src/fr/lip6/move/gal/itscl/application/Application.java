@@ -104,16 +104,10 @@ public class Application implements IApplication {
 		time = System.currentTimeMillis();
 		CommandLine cl= getCmdLine(spec,p.getFolder(),modelName,tool,p);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
-		
-		SolverSeq s = (SolverSeq) new ItsSolver(p,cl);
-		s.attach(new ISolverObserver() {
-			
-			@Override
-			public void notifyResult(ResultP res) {
-				System.out.println("furst threeadd!");
-			}
-		});
-		th1= s.solve();
+		SolverObservable obs= new SolverObservable();
+		SolverSeq s = (SolverSeq) new ItsSolver(p,cl,obs);
+		obs.attach(s);
+		th1=s.solve();
 		
 
 	

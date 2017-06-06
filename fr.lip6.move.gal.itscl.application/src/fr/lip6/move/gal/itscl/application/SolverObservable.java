@@ -7,10 +7,18 @@ public class SolverObservable implements ISolverObservable {
 	private Set<ISolverObserver> obs = new HashSet<>();
 	
 	@Override
-	public void notifyObservers(ResultP res) {
-		for (ISolverObserver o : obs) {
-			o.notifyResult(res);
+	public void notifyObservers(ResultP res,ISolverObserver solver) {
+		solver.notifyResult(res);
+
+		if (res.isOK()){
+			for (ISolverObserver o : obs) {
+				o.problemIsSolved();
+			}
 		}
+		else{
+			this.detach(solver);
+		}
+
 	}
 
 	@Override

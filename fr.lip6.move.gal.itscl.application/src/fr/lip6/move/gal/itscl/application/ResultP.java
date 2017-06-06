@@ -17,4 +17,8 @@ public class ResultP implements IResultP{
 		else
 			return "Error :"+String.valueOf(res);
 	}
+	
+	public boolean isOK(){
+		return (res==OK)?true:false;
+	}
 }
