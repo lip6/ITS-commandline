@@ -3,6 +3,7 @@ package fr.lip6.move.gal.itscl.application;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.eclipse.equinox.app.IApplication;
@@ -27,7 +28,7 @@ public class Application implements IApplication {
 	private static final String CTL_EXAM = "-ctl";
 	private static final String LTL_EXAM = "-ltl";
 	
-	private Thread runnerSeq;
+	private Thread th1;
 	
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
@@ -101,20 +102,19 @@ public class Application implements IApplication {
 		System.out.println("Simplifications done in " + (time - System.currentTimeMillis()) + " ms.");
 		
 		time = System.currentTimeMillis();
-		CommandLine cl= getCmdLine(spec,p.getPwd(),modelName,tool);
+		CommandLine cl= getCmdLine(spec,p.getFolder(),modelName,tool,p);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
 		
-		SolverSeq s = new SolverSeq(p,cl);
+		SolverSeq s = (SolverSeq) new ItsSolver(p,cl);
 		s.attach(new ISolverObserver() {
 			
 			@Override
 			public void notifyResult(ResultP res) {
-				System.out.println("");
+				System.out.println("furst threeadd!");
 			}
 		});
-		runnerSeq= new Thread(s);
-		runnerSeq.start();
-		runnerSeq.join();
+		th1= s.solve();
+		
 
 	
 		return IApplication.EXIT_OK;
@@ -134,15 +134,15 @@ public class Application implements IApplication {
 		}		
 		
 		GALRewriter.flatten(spec, true);
-		return new Problem(spec,tool,cwd);
+		return new Problem(spec,tool,3500,cwd);
 	}
 	
 	
 	// On produit un fichier de modèle pour l'outil ligne de commande
-	public CommandLine getCmdLine(Specification spec, String cwd, String modelName,Tool tool) throws IOException{
+	public CommandLine getCmdLine(Specification spec, String cwd, String modelName,Tool tool,Problem pr) throws IOException{
 		
 		String outpath = cwd+"/"+ modelName + ".gal";
-		outputGalFile(spec, outpath);	
+		pr.outputGalFile(spec, outpath);	
 		
 		CommandLine cl = buildCommandLine(outpath, tool);
 	
@@ -176,16 +176,6 @@ public class Application implements IApplication {
 
 	}
 		
-	public void outputGalFile(Specification spec, String outpath) throws IOException {
-		if (! spec.getProperties().isEmpty()) {
-			List<Property> props = new ArrayList<Property>(spec.getProperties());
-			spec.getProperties().clear();
-			SerializationUtil.systemToFile(spec, outpath);
-			spec.getProperties().addAll(props);
-		} else {
-			SerializationUtil.systemToFile(spec, outpath);
-		}
-	}
 	
 	private CommandLine buildCommandLine(String modelff, Tool tool) throws IOException {
 		CommandLineBuilder cl = new CommandLineBuilder(tool);

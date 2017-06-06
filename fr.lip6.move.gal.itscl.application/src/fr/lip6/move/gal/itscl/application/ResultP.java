@@ -1,6 +1,6 @@
 package fr.lip6.move.gal.itscl.application;
 
-public class ResultP {
+public class ResultP implements IResultP{
 
 	public final static int OK = 0;
 	public final static int KO = 1;
@@ -12,6 +12,9 @@ public class ResultP {
 	}
 	
 	public String toString(){
-		return "DONE "+String.valueOf(res);
+		if(res==OK)
+			return "DONE "+String.valueOf(res);
+		else
+			return "Error :"+String.valueOf(res);
 	}
 }

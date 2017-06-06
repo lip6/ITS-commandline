@@ -5,9 +5,7 @@ import fr.lip6.move.gal.itstools.CommandLine;
 public class  ItsSolver extends SolverObservable implements ISolver  {
 	
 	private final CommandLine cl;
-	private final Problem p;
-	private ResultP result=new ResultP(ResultP.UNKNOWN);
-
+	protected final Problem p;
 	
 	
 	public ItsSolver(Problem p,CommandLine cl){
@@ -15,24 +13,17 @@ public class  ItsSolver extends SolverObservable implements ISolver  {
 		this.p=p;
 	}
 
-	public ResultP solve(Problem p){
-		return result;
+	public Thread solve(){
+		return new Thread();
 	}
 
 	public CommandLine getCmd() {
 		return cl;
 	}
-
-	public Problem getP() {
+	
+	public Problem getProblem(){
 		return p;
 	}
 
-	public ResultP getResult() {
-		return result;
-	}
-	
-	public void setResult(ResultP res){
-		result=res;
-	}
 
 }

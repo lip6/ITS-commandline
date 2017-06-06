@@ -9,40 +9,47 @@ import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.ProcessController.TimeOutException;
 import fr.lip6.move.gal.itstools.Runner;
 
-public class SolverSeq implements ISolverSeq, Runnable, ISolverObservable {
-	
-	
+public class SolverSeq extends ItsSolver implements ISolverSeq, ISolverObserver {
 	
 	public SolverSeq(Problem p, CommandLine cl) {
 		super(p, cl);
 	}
 
-	public void run(){
-		synchronized(getP()){
-			try {
-				
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				int timeout = 3500;
-				IStatus status = Runner.runTool(timeout , getCmd(), baos, true);
-				if (! status.isOK() && status.getCode() != 1) {
-					throw new RuntimeException("Unexpected exception when executing ltsmin :"+ ltsmin +"\n" +status);
-				}
-				boolean result ;
-				String output = baos.toString();
-				ResultP res = output.contains(" A voir") ? new ResultP(1) : new ResultP(0);
-				// analyse 
-				notifyObservers(res );
-				IStatus st = Runner.runTool(3500, getCmd(), System.out, true);
-					if(st.isOK())
-						setResult(new ResultP(ResultP.OK));
+
+	public Thread solve(){
+			
+		Thread runnerTh = new Thread(new Runnable (){
+			
+			public void run(){
+				try {				
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						IStatus status = Runner.runTool(p.getTimeout() , getCmd(), baos, true);
+						if (! status.isOK() && status.getCode() != 1) {
+							throw new RuntimeException("Unexpected exception when executing ltsmin :"+ ltsmin +"\n" +status);
+						}
+						boolean result ;
+						String output = baos.toString();
+						ResultP res = output.contains("Problem ?") ? new ResultP(ResultP.KO) : new ResultP(ResultP.OK);
+						// analyse 
+						notifyObservers(res );
+							
+					} catch (IOException | TimeOutException e) {
+						notifyObservers(new ResultP(ResultP.KO));
+					}
 					
-				} catch (IOException | TimeOutException e) {
-					setResult(new ResultP(ResultP.KO));
-				}
-				
-		}	
+		}
+		});
+		
+		runnerTh.start();
+		return runnerTh;
+		
 	}
-	
-	
-	
+
+
+	@Override
+	public void notifyResult(ResultP res) {
+		// TODO Auto-generated method stub
+		
+	}
 }
+	
