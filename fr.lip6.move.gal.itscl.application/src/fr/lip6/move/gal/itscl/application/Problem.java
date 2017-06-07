@@ -1,14 +1,12 @@
 package fr.lip6.move.gal.itscl.application;
 
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.eclipse.emf.common.util.EList;
 
 import fr.lip6.move.gal.Property;
 import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
-import fr.lip6.move.serialization.SerializationUtil;
 
 public class Problem implements IProblem{
 
@@ -40,18 +38,10 @@ public class Problem implements IProblem{
 	public Tool getTool() {
 		return tool;
 	}
+
+
 	
 	
-	public void outputGalFile(Specification spec, String outpath) throws IOException {
-		if (! spec.getProperties().isEmpty()) {
-			List<Property> props = new ArrayList<Property>(spec.getProperties());
-			spec.getProperties().clear();
-			SerializationUtil.systemToFile(spec, outpath);
-			spec.getProperties().addAll(props);
-		} else {
-			SerializationUtil.systemToFile(spec, outpath);
-		}
-	}
 	
 
 
