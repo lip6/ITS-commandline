@@ -2,6 +2,7 @@ package fr.lip6.move.gal.itscl.application;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import org.eclipse.core.runtime.IStatus;
 
@@ -10,7 +11,7 @@ import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.ProcessController.TimeOutException;
 import fr.lip6.move.gal.itstools.Runner;
 
-public class SolverSeq extends ItsSolver implements ISolverSeq, ISolverObserver {
+public class SolverSeq extends ItsSolver implements ISolverSeq, ISolverObserver{
 	
 	private Thread runnerTh;
 	
@@ -18,7 +19,8 @@ public class SolverSeq extends ItsSolver implements ISolverSeq, ISolverObserver 
 		super(p, cl);
 	}
 
-
+	
+	
 	public void solve(Ender obs){
 		ISolverObserver here=this;
 			
@@ -34,10 +36,10 @@ public class SolverSeq extends ItsSolver implements ISolverSeq, ISolverObserver 
 						String output = baos.toString();
 						ResultP res = output.contains("Problem ?") ? new ResultP(ResultP.KO) : new ResultP(ResultP.OK);
 						// analyse 
-						obs.notifyObservers(res,here);
+						((ISolverObservable) obs).notifyObservers(res,here);
 							
 					} catch (IOException | TimeOutException e) {
-						obs.notifyObservers(new ResultP(ResultP.KO),here);
+						((ISolverObservable) obs).notifyObservers(new ResultP(ResultP.KO),here);
 					}
 					
 		}
