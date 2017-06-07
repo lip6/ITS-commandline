@@ -3,17 +3,18 @@ package fr.lip6.move.gal.itscl.application;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SolverObservable implements ISolverObservable {
+import fr.lip6.move.gal.application.Ender;
+
+public class SolverObservable implements ISolverObservable,Ender {
 	private Set<ISolverObserver> obs = new HashSet<>();
 	
 	@Override
 	public void notifyObservers(ResultP res,ISolverObserver solver) {
+	
 		solver.notifyResult(res);
 
 		if (res.isOK()){
-			for (ISolverObserver o : obs) {
-				o.problemIsSolved();
-			}
+			killAll();
 		}
 		else{
 			this.detach(solver);
@@ -29,6 +30,18 @@ public class SolverObservable implements ISolverObservable {
 	@Override
 	public void detach(ISolverObserver o) {
 		obs.remove(o);
+	}
+
+	@Override
+	public void killAll() {
+		for (ISolverObserver o : obs) {
+			o.interrupt();
+			try {
+				o.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}		
 	}
 
 }
