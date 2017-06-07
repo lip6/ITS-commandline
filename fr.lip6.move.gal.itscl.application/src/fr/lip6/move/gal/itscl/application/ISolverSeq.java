@@ -1,5 +1,5 @@
 package fr.lip6.move.gal.itscl.application;
 
-public interface ISolverSeq {
+public interface ISolverSeq extends ISolver{
 
 }
