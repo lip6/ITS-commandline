@@ -1,7 +1,7 @@
 package fr.lip6.move.gal.itscl.application;
 
+import fr.lip6.move.gal.Property;
 import fr.lip6.move.gal.application.CegarRunner;
-import fr.lip6.move.gal.application.Ender;
 
 public class AdapterCegar implements ISolverSeq{
 
@@ -12,8 +12,29 @@ public class AdapterCegar implements ISolverSeq{
 	}
 
 
-	public void solve(Ender obs) {
-		cegRunner.runCegar( cegRunner.getSpec(), cegRunner.getFolder(), obs);
+
+	public void currentState() {
+		
+	}
+
+
+	public int isComplete() {
+		for (Property prop : cegRunner.getSpec().getProperties()) {
+			if (! cegRunner.getDoneProps().contains(prop.getName())) {
+				// still some work to do
+				return 1;
+			}
+		}	
+		return 0;
+	}
+
+ 
+	public Integer call() throws Exception {
+		
+		cegRunner.solve();
+		
+		return isComplete();
+		
 	}
 	
 	
