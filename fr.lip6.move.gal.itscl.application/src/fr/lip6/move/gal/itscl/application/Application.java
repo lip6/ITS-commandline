@@ -12,7 +12,11 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
-
+import fr.lip6.move.gal.CTLProp;
+import fr.lip6.move.gal.LTLProp;
+import fr.lip6.move.gal.Property;
+import fr.lip6.move.gal.SafetyProp;
+import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.instantiate.GALRewriter;
 import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.CommandLineBuilder;
@@ -29,6 +33,8 @@ public class Application implements IApplication {
 	private static final String CTL_EXAM = "-ctl";
 	private static final String LTL_EXAM = "-ltl";
 	
+	
+	private ExecutorService exec;
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
@@ -105,7 +111,7 @@ public class Application implements IApplication {
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
 		
 		ChiefRunners superRunner= new ChiefRunners();
-		ExecutorService exec = Executors.newSingleThreadExecutor();
+		exec = Executors.newSingleThreadExecutor();
 		
 		SolverSeq s = new SolverSeq(p,cl);
 		superRunner.attach(s);
@@ -131,7 +137,7 @@ public class Application implements IApplication {
 		}		
 		
 		GALRewriter.flatten(spec, true);
-		return new Problem(spec,tool,3500,cwd,spec.getProperties());
+		return new Problem(spec,tool,3500,cwd);
 	}
 	
 	
@@ -191,11 +197,13 @@ public class Application implements IApplication {
 		cl.setModelType("CGAL");
 		return cl.getCommandLine();
 	}
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.equinox.app.IApplication#stop()
-	 */
-	@Override
+
+
+
 	public void stop() {
+		exec.shutdown();
+		if (!exec.isShutdown())
+			System.out.println("Problem to shutdown executor of runners");
 	}
+		
 }

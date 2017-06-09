@@ -22,13 +22,11 @@ public class ChiefRunners implements Callable<Boolean> , ISolverObservable {
 	private TimeUnit unit;
 	
 	
-	@Override
 	public void attach(ISolver o) {
 		obs.add(o);
 		
 	}
 
-	@Override
 	public void detach(ISolver o) {
 		obs.remove(o);
 	}
@@ -50,8 +48,9 @@ public class ChiefRunners implements Callable<Boolean> , ISolverObservable {
 	@Override
 	public void killAll() {
 		List<Runnable> notFinished = executor.shutdownNow();  // savoir qui a fini ?
+		
 		for (Future<Integer> o : fsolvers){
-			if(o.isDone()){
+			if(o.isDone()){  //pas vraiment celle qui a fini 
 				//celui qui a fini
 			}else if(!o.isCancelled()){
 				//Erreur un thread n'a pas ete shutdown
@@ -62,8 +61,6 @@ public class ChiefRunners implements Callable<Boolean> , ISolverObservable {
 	}
 		
 		
-	
-	@Override
 	public Boolean call(){
 		try{
 			for(ISolver o : obs){

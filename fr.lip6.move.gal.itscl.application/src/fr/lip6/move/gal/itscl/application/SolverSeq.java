@@ -2,18 +2,14 @@ package fr.lip6.move.gal.itscl.application;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.eclipse.core.runtime.IStatus;
 
-import fr.lip6.move.gal.application.Ender;
 import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.ProcessController.TimeOutException;
 import fr.lip6.move.gal.itstools.Runner;
 
-public class SolverSeq extends ItsSolver implements ISolver, Callable<Integer>{
+public class SolverSeq extends ItsSolver implements ISolverSeq{
 		
 	
 	private ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -47,12 +43,10 @@ public class SolverSeq extends ItsSolver implements ISolver, Callable<Integer>{
 	}
 
 	
-	@Override
 	public void currentState(){
 		System.out.println(baos.toString());
 	}
 	
-	@Override
 	public int isComplete(){
 		return output.contains("Error")? 1 : 0;
 	}
