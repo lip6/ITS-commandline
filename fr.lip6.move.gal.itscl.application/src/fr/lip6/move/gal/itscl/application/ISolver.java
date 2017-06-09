@@ -1,9 +1,10 @@
 package fr.lip6.move.gal.itscl.application;
 
-import fr.lip6.move.gal.application.Ender;
+import java.util.concurrent.Callable;
 
-public interface ISolver {
+public interface ISolver extends Callable<Integer> {
 
-	public void solve(Ender obs);
+	public void currentState();
+	public int isComplete();
 	
 }

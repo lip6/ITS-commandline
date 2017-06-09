@@ -1,7 +1,10 @@
 package fr.lip6.move.gal.itscl.application;
 
-public interface ISolverObservable {
-	void attach(ISolverObserver obs) ;
-	void detach(ISolverObserver obs) ;
-	void notifyObservers(ResultP res,ISolverObserver solver);
+
+import fr.lip6.move.gal.application.Ender;
+
+public interface ISolverObservable extends Ender {
+	void attach(ISolver obs) ;
+	void detach(ISolver obs) ;
+	
 }
