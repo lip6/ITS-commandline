@@ -11,6 +11,7 @@ public class ResultP implements IResultP{
 		this.res=res;
 	}
 	
+	@Override
 	public String toString(){
 		if(res==OK)
 			return "DONE "+String.valueOf(res);

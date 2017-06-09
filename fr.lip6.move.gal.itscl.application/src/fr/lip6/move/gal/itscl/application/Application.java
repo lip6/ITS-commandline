@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.equinox.app.IApplication;
@@ -16,6 +18,8 @@ import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.CommandLineBuilder;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 import fr.lip6.move.serialization.SerializationUtil;
+import java.util.concurrent.TimeUnit;
+
 
 public class Application implements IApplication {
 	private static final String APPARGS = "application.args";
@@ -29,6 +33,7 @@ public class Application implements IApplication {
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
+	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		
 		String [] args = (String[]) context.getArguments().get(APPARGS);
@@ -99,10 +104,15 @@ public class Application implements IApplication {
 		CommandLine cl= getCmdLine(spec,p.getFolder(),modelName,tool);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
 		
-		SolverObservable obs= new SolverObservable();
+		ChiefRunners superRunner= new ChiefRunners();
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		
 		SolverSeq s = new SolverSeq(p,cl);
-		obs.attach(s);
-		s.solve(obs);
+		superRunner.attach(s);
+		//run les solvers
+		superRunner.setTimeout(3500,TimeUnit.MILLISECONDS);
+		exec.submit(superRunner);
+	
 		
 		return IApplication.EXIT_OK;
 	}
@@ -185,6 +195,7 @@ public class Application implements IApplication {
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
+	@Override
 	public void stop() {
 	}
 }

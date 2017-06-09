@@ -9,11 +9,6 @@ import java.util.List;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
-import fr.lip6.move.gal.CTLProp;
-import fr.lip6.move.gal.LTLProp;
-import fr.lip6.move.gal.Property;
-import fr.lip6.move.gal.SafetyProp;
-import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.instantiate.GALRewriter;
 import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.CommandLineBuilder;
@@ -32,6 +27,7 @@ public class Application1 implements IApplication {
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
+	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		
 		String [] args = (String[]) context.getArguments().get(APPARGS);
@@ -163,6 +159,7 @@ public class Application1 implements IApplication {
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
+	@Override
 	public void stop() {
 	}
 }
