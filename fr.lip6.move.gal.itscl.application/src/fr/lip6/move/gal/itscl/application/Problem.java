@@ -4,8 +4,6 @@ package fr.lip6.move.gal.itscl.application;
 
 import org.eclipse.emf.common.util.EList;
 
-import fr.lip6.move.gal.Property;
-import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 
 public class Problem implements IProblem{
@@ -14,6 +12,7 @@ public class Problem implements IProblem{
 	private final Tool tool;
 	private int timeout;
 	private String folder;
+	private Object Props;
 
 	
 	public Problem(Specification spec, Tool tool,int timeout, String folder) {
@@ -23,6 +22,7 @@ public class Problem implements IProblem{
 		this.folder= folder;
 	}
 
+	@Override
 	public Specification getSpec() {
 		return spec;
 	}
