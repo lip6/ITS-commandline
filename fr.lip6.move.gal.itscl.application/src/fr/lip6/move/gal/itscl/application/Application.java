@@ -3,12 +3,10 @@ package fr.lip6.move.gal.itscl.application;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -24,7 +22,7 @@ import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 import fr.lip6.move.serialization.SerializationUtil;
 import java.util.concurrent.TimeUnit;
 
-
+ 
 public class Application implements IApplication {
 	private static final String APPARGS = "application.args";
 	private static final String INPUT_FILE = "-i";
@@ -35,7 +33,6 @@ public class Application implements IApplication {
 	
 	
 	private ExecutorService exec;
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
 	 */
@@ -101,15 +98,14 @@ public class Application implements IApplication {
 		long time = System.currentTimeMillis();
 		Specification spec = SerializationUtil.fileToGalSystem(inputff);		
 		System.out.println("Successfully read input file : " + inputff +" in " + (time - System.currentTimeMillis()) + " ms.");
-		
+
 		time = System.currentTimeMillis();
 		Problem p = loadModel(pwd, spec, tool);
 		System.out.println("Simplifications done in " + (time - System.currentTimeMillis()) + " ms.");
-		
+
 		time = System.currentTimeMillis();
 		CommandLine cl= getCmdLine(spec,p.getFolder(),modelName,tool);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
-		
 		ChiefRunners superRunner= new ChiefRunners();
 		exec = Executors.newSingleThreadExecutor();
 		
@@ -117,6 +113,8 @@ public class Application implements IApplication {
 		superRunner.attach(s);
 		//run les solvers
 		superRunner.setTimeout(3500,TimeUnit.MILLISECONDS);
+		Listener lst= new Listener();
+		superRunner.configureListener(lst);
 		exec.submit(superRunner);
 	
 		
@@ -135,8 +133,8 @@ public class Application implements IApplication {
 				System.err.println("Could not set up work folder in "+cwd);
 			}
 		}		
-		
 		GALRewriter.flatten(spec, true);
+
 		return new Problem(spec,tool,3500,cwd);
 	}
 	

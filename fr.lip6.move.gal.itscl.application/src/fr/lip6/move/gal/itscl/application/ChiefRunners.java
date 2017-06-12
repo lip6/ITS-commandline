@@ -3,7 +3,6 @@ package fr.lip6.move.gal.itscl.application;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
@@ -13,7 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 
-public class ChiefRunners implements Callable<Boolean> , ISolverObservable {
+public class ChiefRunners implements  ISolverObservable {
 	
 	private Set<ISolver> obs = new HashSet<>();
 	private List <Future<Integer>> fsolvers=null;
@@ -85,6 +84,12 @@ public class ChiefRunners implements Callable<Boolean> , ISolverObservable {
 		}
 
 		return false;
+	}
+
+	public void configureListener(Listener lst) {
+		for(ISolver o: obs){
+			o.configListener(lst);
+		}
 	}
 	
 

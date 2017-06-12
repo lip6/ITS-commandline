@@ -6,5 +6,6 @@ public interface ISolver extends Callable<Integer> {
 
 	public void currentState();
 	public int isComplete();
+	public void configListener(IListener lst);
 	
 }
