@@ -21,7 +21,6 @@ import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.CommandLineBuilder;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 import fr.lip6.move.serialization.SerializationUtil;
-import java.util.concurrent.TimeUnit;
 
  
 public class Application implements IApplication {
@@ -43,6 +42,7 @@ public class Application implements IApplication {
 		String [] args = (String[]) context.getArguments().get(APPARGS);
 		
 		String inputff = null;
+		@SuppressWarnings("unused")
 		String inputType = null;
 
 		Tool tool = Tool.reach;
@@ -107,7 +107,7 @@ public class Application implements IApplication {
 		time = System.currentTimeMillis();
 		CommandLine cl= getCmdLine(spec,p.getFolder(),modelName,tool);
 		System.out.println("Built GAL and property files in "+ (time - System.currentTimeMillis()) + " ms.");
-		ChiefRunners superRunner= new ChiefRunners();
+		SolverObservable superRunner= new SolverObservable();
 		exec = Executors.newSingleThreadExecutor();
 		
 		SolverSeq s = new SolverSeq(p,cl);
