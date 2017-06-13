@@ -1,23 +1,16 @@
 package operations.adaptation;
 
-import fr.lip6.move.gal.itscl.application.SolverObservable;
+import adapter.Adapter;
+import fr.lip6.move.gal.itscl.application.IRunner;
+import fr.lip6.move.gal.itscl.application.ISolver;
 
 public class InteractApplication {
 
-	private SolverObservable sobs;
 	
-	public InteractApplication(){
-		super();
-		sobs = new SolverObservable();
+	public static ISolver add(IRunner r){
+		return new Adapter(r);
 	}
 	
-	public void add(IRunner r){
-		sobs.attach(r);
-	}
-	
-	public void remove(IRunner r){
-		sobs.detach(r);
-	}
 	
 	
 	

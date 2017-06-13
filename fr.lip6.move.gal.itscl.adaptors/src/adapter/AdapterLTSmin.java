@@ -1,33 +1,13 @@
 package adapter;
 
  
-import fr.lip6.move.gal.itscl.application.ISolverSeq;
-import operations.adaptation.IRunner;
+import fr.lip6.move.gal.itscl.application.IRunner;
 
-public class AdapterLTSmin implements ISolverSeq{
+public class AdapterLTSmin extends Adapter{
 
-	private final IRunner ltsRunner;
-	
 	
 	public AdapterLTSmin(IRunner lts){
-		ltsRunner=lts;
-	}
-
-	@Override
-	public void currentState() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int isComplete() {
-		return ltsRunner.taskDone()?0:1;
-	}
-
-	@Override
-	public Integer call() throws Exception {
-		ltsRunner.solve();
-		return isComplete();
+		runner=lts;
 	}
 
 }
