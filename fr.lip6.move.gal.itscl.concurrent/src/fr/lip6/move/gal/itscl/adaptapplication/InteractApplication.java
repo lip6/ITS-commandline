@@ -1,6 +1,6 @@
-package operations.adaptation;
+package fr.lip6.move.gal.itscl.adaptapplication;
 
-import adapter.Adapter;
+import fr.lip6.move.gal.itscl.adaptor.Adapter;
 import fr.lip6.move.gal.itscl.application.IRunner;
 import fr.lip6.move.gal.itscl.application.ISolver;
 
