@@ -1,5 +1,6 @@
 package fr.lip6.move.gal.itscl.application;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.concurrent.Future;
 public class SolverObservable implements ISolverObservable {
 
 	private Set<ISolver> obs = new HashSet<>();
-	private List<Future<Integer>> fsolvers = null;
+	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
 
 	public void attach(ISolver o) {
@@ -41,11 +42,13 @@ public class SolverObservable implements ISolverObservable {
 	}
 
 	public Boolean call() {
-		for (ISolver o : obs) {
-			fsolvers.add(executor.submit(o));
-		}
-		int nbSolver = obs.size(), i = 0;
 		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
+
+		for (ISolver o : obs) {
+			fsolvers.add(completionService.submit(o));
+		}
+
+		int nbSolver = obs.size(), i = 0;
 
 		do {
 			try {
@@ -58,7 +61,7 @@ public class SolverObservable implements ISolverObservable {
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-			} catch( ExecutionException ee){
+			} catch (ExecutionException ee) {
 				ee.printStackTrace();
 				return false;
 			}
