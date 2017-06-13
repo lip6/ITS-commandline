@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Adapter
-Bundle-SymbolicName: fr.lip6.move.gal.itscl.pnmcc.adaptors
+Bundle-SymbolicName: fr.lip6.move.gal.itscl.interprete.application
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: fr.lip6.move.gal
+Export-Package: fr.lip6.move.gal.itscl.adaptors.irunner
