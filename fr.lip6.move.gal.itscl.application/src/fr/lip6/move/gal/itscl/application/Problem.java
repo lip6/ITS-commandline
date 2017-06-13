@@ -1,8 +1,5 @@
 package fr.lip6.move.gal.itscl.application;
 
-
-
-
 import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;
 
@@ -21,7 +18,6 @@ public class Problem implements IProblem{
 		this.folder= folder;
 	}
 
-	@Override
 	public Specification getSpec() {
 		return spec;
 	}

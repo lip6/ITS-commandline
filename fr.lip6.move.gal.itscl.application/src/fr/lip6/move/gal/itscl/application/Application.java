@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -112,13 +113,17 @@ public class Application implements IApplication {
 		SolverSeq s = new SolverSeq(p,cl);
 		superRunner.attach(s);
 		//run les solvers
-		superRunner.setTimeout(3500,TimeUnit.MILLISECONDS);
-		Listener lst= new Listener();
-		superRunner.configureListener(lst);
-		exec.submit(superRunner);
-	
+//		Listener lst= new Listener();
+//		superRunner.configureListener(lst);
+		FutureTask<Boolean> executeRunner=new FutureTask<>(superRunner);
+		Thread futureTh= new Thread(executeRunner);
+//		exec.submit(superRunner);
+		futureTh.start();
+		Boolean result = executeRunner.get();
+		System.out.println("Operation reussi ? "+result);
+
 		
-		return IApplication.EXIT_OK;
+		return result?IApplication.EXIT_OK:1;
 	}
 	
 	
@@ -135,7 +140,7 @@ public class Application implements IApplication {
 		}		
 		GALRewriter.flatten(spec, true);
 
-		return new Problem(spec,tool,3500,cwd);
+		return new Problem(spec,tool,35000,cwd);
 	}
 	
 	

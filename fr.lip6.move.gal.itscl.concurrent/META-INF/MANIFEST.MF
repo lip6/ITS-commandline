@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Concurrent Support for Portfolio
+Bundle-SymbolicName: fr.lip6.move.gal.itscl.concurrent
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: LIP6
+Export-Package: fr.lip6.move.gal.itscl.adapter,
+ fr.lip6.move.gal.itscl.application
+Import-Package: fr.lip6.move.gal,
+ fr.lip6.move.gal.application

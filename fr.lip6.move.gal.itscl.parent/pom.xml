@@ -18,6 +18,7 @@
 	<description>Command-line interaction with code built for Eclipse</description>
 
 	<modules>
+		<module>../fr.lip6.move.gal.itscl.concurrent</module>
 		<!-- Application plugin -->
 		<module>../fr.lip6.move.gal.itscl.application</module>
 		<!-- feature plugin -->
