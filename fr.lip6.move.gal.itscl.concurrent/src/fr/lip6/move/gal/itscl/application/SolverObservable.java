@@ -26,24 +26,29 @@ public class SolverObservable implements ISolverObservable {
 		obs.remove(o);
 	}
 
-	@Override
 	public void killAll() {
-		@SuppressWarnings("unused")
-		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a
-																// fini ?
+		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a fini
+		for (Runnable r : notFinished) {
+			System.out.println(r);
+
+		}
 
 		for (Future<Integer> o : fsolvers) {
 			if (!o.isCancelled() || !o.isDone()) {
 				// Erreur un thread n'a pas ete shutdown
 				o.cancel(true);
+				System.out.println("i pass hiiieree  why soo");
+
 			}
 
 		}
 	}
 
 	public Boolean call() {
-		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
 
+		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
+//		fsolvers = executor.invokeAll(obs); //execute les solvers et renvoie les futures dans l'ordre qui a ete donné dans obs
+		
 		for (ISolverSeq o : obs) {
 			fsolvers.add(completionService.submit(o));
 		}
@@ -55,7 +60,6 @@ public class SolverObservable implements ISolverObservable {
 
 				Future<Integer> solverDone = completionService.take();
 				if (solverDone.isDone() && solverDone.get() == 0) {
-					System.out.println("Solved by : " + solverDone.getClass());
 					killAll();
 					return true;
 				}

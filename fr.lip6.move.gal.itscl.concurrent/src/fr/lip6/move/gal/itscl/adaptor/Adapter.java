@@ -12,8 +12,6 @@ public class Adapter implements ISolverSeq {
 	}
 
 	public int isComplete() {
-		System.out.println("Solved by :"+this.getClass().getName());
-
 		return runner.taskDone() ? 0 : 1;
 	}
 

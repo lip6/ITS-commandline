@@ -9,24 +9,19 @@ import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.ProcessController.TimeOutException;
 import fr.lip6.move.gal.itstools.Runner;
 
-public class SolverSeq extends ItsSolver implements ISolverSeq {
+public class SolverSeq extends ItsSolver {
 
 	private ByteArrayOutputStream baos = new ByteArrayOutputStream();
 	private String output;
 
-	public SolverSeq(Problem p, CommandLine cl) {
+	public SolverSeq(ProblemSS p, CommandLine cl) {
 		super(p, cl);
-	}
-
-	public void currentState() {
-		System.out.println(baos.toString());
 	}
 
 	public int isComplete() {
 		return output.contains("Error") ? 1 : 0;
 	}
 
-	@Override
 	public Integer call() {
 
 		try {
