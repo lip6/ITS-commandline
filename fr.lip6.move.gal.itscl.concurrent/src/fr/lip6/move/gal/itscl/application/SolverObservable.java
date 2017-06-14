@@ -27,7 +27,8 @@ public class SolverObservable implements ISolverObservable {
 	}
 
 	public void killAll() {
-		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a fini
+		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a
+																// fini
 		for (Runnable r : notFinished) {
 			System.out.println(r);
 
@@ -46,33 +47,59 @@ public class SolverObservable implements ISolverObservable {
 
 	public Boolean call() {
 
-		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
-//		fsolvers = executor.invokeAll(obs); //execute les solvers et renvoie les futures dans l'ordre qui a ete donné dans obs
-		
-		for (ISolverSeq o : obs) {
-			fsolvers.add(completionService.submit(o));
+		// CompletionService<Integer> completionService = new
+		// ExecutorCompletionService<Integer>(executor);
+
+		// execute les solvers et renvoie les futures dans l'ordre qui a ete
+		// donné dans obs
+		try {
+			fsolvers = executor.invokeAll(obs);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 
-		int nbSolver = obs.size(), i = 0;
+		for (ISolverSeq o : obs) {
+			fsolvers.add(executor.submit(o));
+		}
 
-		do {
-			try {
+		int nbSolver = fsolvers.size(), i = 0;
 
-				Future<Integer> solverDone = completionService.take();
-				if (solverDone.isDone() && solverDone.get() == 0) {
+		try {
+
+			this.wait();
+
+			for (i = 0; i < nbSolver; i++) {
+				Future<Integer> f = fsolvers.get(i);
+
+				if (f.isDone() && f.get() == 0) {
 					killAll();
-					return true;
+					break;
 				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException ee) {
-				ee.printStackTrace();
-				return false;
 			}
-		} while (++i < nbSolver);
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		System.out.println("Problem not solved");
 		return false;
 	}
+
+	// do {
+	// try {
+	//
+	// this.wait();
+	// Future<Integer> solverDone = executor.take();
+	// if (solverDone.isDone() && solverDone.get() == 0) {
+	// killAll();
+	// return true;
+	// }
+	// } catch (InterruptedException e) {
+	// e.printStackTrace();
+	// } catch (ExecutionException ee) {
+	// ee.printStackTrace();
+	// return false;
+	// }
+	// } while (++i < nbSolver);
 
 }
