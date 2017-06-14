@@ -5,17 +5,16 @@ import java.util.Set;
 
 import fr.lip6.move.gal.Specification;
 
-
 public interface IRunner {
 
+	public void configure(Specification z3Spec, Set<String> doneProps) throws IOException;
 
-	void configure(Specification z3Spec, Set<String> doneProps) throws IOException;
+	public void solve();
 
-	void solve();
-	
-	Specification getSpec();
-	
-	Set<String> doneProps();
-	Boolean taskDone();
-	
+	public Specification getSpec();
+
+	public Set<String> doneProps();
+
+	public Boolean taskDone();
+
 }

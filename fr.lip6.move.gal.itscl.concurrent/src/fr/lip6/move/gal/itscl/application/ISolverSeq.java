@@ -1,5 +1,9 @@
 package fr.lip6.move.gal.itscl.application;
 
-public interface ISolverSeq extends ISolver{
+import java.util.concurrent.Callable;
+
+public interface ISolverSeq extends Callable<Integer> {
+
+	public int isComplete();
 
 }

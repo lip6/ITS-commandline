@@ -13,16 +13,16 @@ import java.util.concurrent.Future;
 
 public class SolverObservable implements ISolverObservable {
 
-	private Set<ISolver> obs = new HashSet<>();
+	private Set<ISolverSeq> obs = new HashSet<>();
 	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
 
-	public void attach(ISolver o) {
+	public void attach(ISolverSeq o) {
 		obs.add(o);
 
 	}
 
-	public void detach(ISolver o) {
+	public void detach(ISolverSeq o) {
 		obs.remove(o);
 	}
 
@@ -44,7 +44,7 @@ public class SolverObservable implements ISolverObservable {
 	public Boolean call() {
 		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
 
-		for (ISolver o : obs) {
+		for (ISolverSeq o : obs) {
 			fsolvers.add(completionService.submit(o));
 		}
 
