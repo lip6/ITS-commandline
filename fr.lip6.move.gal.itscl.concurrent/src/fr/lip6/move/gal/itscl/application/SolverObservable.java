@@ -19,87 +19,60 @@ public class SolverObservable implements ISolverObservable {
 
 	public void attach(ISolverSeq o) {
 		obs.add(o);
-
 	}
 
 	public void detach(ISolverSeq o) {
 		obs.remove(o);
 	}
 
+	@SuppressWarnings("unused")
 	public void killAll() {
 		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a
-																// fini
-		for (Runnable r : notFinished) {
-			System.out.println(r);
-
-		}
-
+																// fini ?
 		for (Future<Integer> o : fsolvers) {
-			if (!o.isCancelled() || !o.isDone()) {
-				// Erreur un thread n'a pas ete shutdown
-				o.cancel(true);
-				System.out.println("i pass hiiieree  why soo");
-
+			try {
+				if (o.isDone() && o.get()==0) {
+					System.out.println("is donne");
+				} else if (!o.isDone()) {
+					o.cancel(true);
+					System.out.println("na pas fini mais canceled ");
+				}
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
 			}
+			if(o.isCancelled())
+				System.out.println("was canceled");
 
 		}
 	}
 
 	public Boolean call() {
-
-		// CompletionService<Integer> completionService = new
-		// ExecutorCompletionService<Integer>(executor);
-
-		// execute les solvers et renvoie les futures dans l'ordre qui a ete
-		// donné dans obs
-		try {
-			fsolvers = executor.invokeAll(obs);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
 
 		for (ISolverSeq o : obs) {
-			fsolvers.add(executor.submit(o));
+			fsolvers.add(completionService.submit(o));
 		}
 
-		int nbSolver = fsolvers.size(), i = 0;
+		int nbSolver = obs.size(), i = 0;
 
-		try {
+		do {
+			try {
 
-			this.wait();
-
-			for (i = 0; i < nbSolver; i++) {
-				Future<Integer> f = fsolvers.get(i);
-
-				if (f.isDone() && f.get() == 0) {
+				Future<Integer> solverDone = completionService.take();
+				if (solverDone.isDone() && solverDone.get() == 0) {
 					killAll();
-					break;
+					return true;
 				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException ee) {
+				ee.printStackTrace();
+				return false;
 			}
-		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} while (++i < nbSolver);
 
 		System.out.println("Problem not solved");
 		return false;
 	}
-
-	// do {
-	// try {
-	//
-	// this.wait();
-	// Future<Integer> solverDone = executor.take();
-	// if (solverDone.isDone() && solverDone.get() == 0) {
-	// killAll();
-	// return true;
-	// }
-	// } catch (InterruptedException e) {
-	// e.printStackTrace();
-	// } catch (ExecutionException ee) {
-	// ee.printStackTrace();
-	// return false;
-	// }
-	// } while (++i < nbSolver);
 
 }

@@ -18,7 +18,6 @@ public class Adapter implements ISolverSeq {
 	public Integer call() throws Exception {
 
 		runner.solve();
-
 		return isComplete();
 
 	}
