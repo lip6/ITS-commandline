@@ -11,7 +11,6 @@ public class ResultP implements IResultP {
 		this.res = res;
 	}
 
-	@Override
 	public String toString() {
 		if (res == OK)
 			return "DONE " + String.valueOf(res);
@@ -22,4 +21,10 @@ public class ResultP implements IResultP {
 	public boolean isOK() {
 		return (res == OK) ? true : false;
 	}
+	
+	public boolean isUnknown(){
+		return res==UNKNOWN? true:false;
+	}
+	
+	
 }

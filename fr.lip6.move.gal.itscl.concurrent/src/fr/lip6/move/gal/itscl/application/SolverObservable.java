@@ -25,28 +25,28 @@ public class SolverObservable implements ISolverObservable {
 		obs.remove(o);
 	}
 
-	@SuppressWarnings("unused")
 	public void killAll() {
 		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a
-																// fini ?
+		if (notFinished == null) {
+			System.out.println("ts ont fini");// fini
+		}
+		
+		// try {
+		// executor.awaitTermination(35000, TimeUnit.MILLISECONDS);
+		// } catch (InterruptedException e) {
+		// System.out.println("timeout elapsed before termination");
+		// }
+		
 		for (Future<Integer> o : fsolvers) {
-			try {
-				if (o.isDone() && o.get()==0) {
-					System.out.println("is donne");
-				} else if (!o.isDone()) {
-					o.cancel(true);
-					System.out.println("na pas fini mais canceled ");
-				}
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
+			if (!o.isDone()) {
+				o.cancel(true);
+				System.out.println("na pas fini mais canceled ");
 			}
-			if(o.isCancelled())
-				System.out.println("was canceled");
-
 		}
 	}
 
 	public Boolean call() {
+
 		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
 
 		for (ISolverSeq o : obs) {
@@ -57,17 +57,17 @@ public class SolverObservable implements ISolverObservable {
 
 		do {
 			try {
-
+				// waiting for the first solver to terminate
 				Future<Integer> solverDone = completionService.take();
+				// Test if it has completed with no error
 				if (solverDone.isDone() && solverDone.get() == 0) {
 					killAll();
 					return true;
 				}
-			} catch (InterruptedException e) {
+			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
-			} catch (ExecutionException ee) {
-				ee.printStackTrace();
 				return false;
+
 			}
 		} while (++i < nbSolver);
 

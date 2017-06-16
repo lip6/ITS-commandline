@@ -19,7 +19,7 @@ public class SolverSeq extends ItsSolver {
 	}
 
 	public int isComplete() {
-		return output.contains("Error") ? 1 : 0;
+		return output.contains("Error") ? ResultP.KO : ResultP.OK;
 	}
 
 	public Integer call() {
