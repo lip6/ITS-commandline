@@ -31,16 +31,9 @@ public class SolverObservable implements ISolverObservable {
 			System.out.println("ts ont fini");// fini
 		}
 		
-		// try {
-		// executor.awaitTermination(35000, TimeUnit.MILLISECONDS);
-		// } catch (InterruptedException e) {
-		// System.out.println("timeout elapsed before termination");
-		// }
-		
 		for (Future<Integer> o : fsolvers) {
 			if (!o.isDone()) {
 				o.cancel(true);
-				System.out.println("na pas fini mais canceled ");
 			}
 		}
 	}
@@ -60,7 +53,7 @@ public class SolverObservable implements ISolverObservable {
 				// waiting for the first solver to terminate
 				Future<Integer> solverDone = completionService.take();
 				// Test if it has completed with no error
-				if (solverDone.isDone() && solverDone.get() == 0) {
+				if (solverDone.get() == 0) {
 					killAll();
 					return true;
 				}
