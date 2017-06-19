@@ -1,5 +1,6 @@
 package fr.lip6.move.gal.itscl.application;
 
+import fr.lip6.move.gal.itscl.modele.ISolverSeq;
 import fr.lip6.move.gal.itstools.CommandLine;
 
 public abstract class ItsSolver implements ISolverSeq {

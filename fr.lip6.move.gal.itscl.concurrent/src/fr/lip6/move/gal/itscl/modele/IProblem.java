@@ -1,4 +1,4 @@
-package fr.lip6.move.gal.itscl.application;
+package fr.lip6.move.gal.itscl.modele;
 
 import fr.lip6.move.gal.Specification;
 

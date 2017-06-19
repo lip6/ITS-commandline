@@ -17,6 +17,7 @@ import fr.lip6.move.gal.Property;
 import fr.lip6.move.gal.SafetyProp;
 import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.instantiate.GALRewriter;
+import fr.lip6.move.gal.itscl.modele.SolverObservable;
 import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.CommandLineBuilder;
 import fr.lip6.move.gal.itstools.BinaryToolsPlugin.Tool;

@@ -1,4 +1,4 @@
-package fr.lip6.move.gal.itscl.application;
+package fr.lip6.move.gal.itscl.modele;
 
 /** 
  * Something you tell when it's time to end it.

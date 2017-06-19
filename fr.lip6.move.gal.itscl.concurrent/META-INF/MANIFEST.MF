@@ -6,6 +6,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: LIP6
 Export-Package: fr.lip6.move.gal.itscl.adaptapplication,
  fr.lip6.move.gal.itscl.adaptor,
- fr.lip6.move.gal.itscl.application
+ fr.lip6.move.gal.itscl.modele
 Import-Package: fr.lip6.move.gal
 Bundle-Version: 1.0.0.qualifier

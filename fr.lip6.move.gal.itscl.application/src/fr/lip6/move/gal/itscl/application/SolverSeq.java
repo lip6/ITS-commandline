@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.IStatus;
 
+import fr.lip6.move.gal.itscl.modele.ResultP;
 import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.ProcessController.TimeOutException;
 import fr.lip6.move.gal.itstools.Runner;

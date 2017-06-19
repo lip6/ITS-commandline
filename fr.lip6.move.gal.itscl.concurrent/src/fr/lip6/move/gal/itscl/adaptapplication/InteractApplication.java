@@ -1,8 +1,8 @@
 package fr.lip6.move.gal.itscl.adaptapplication;
 
 import fr.lip6.move.gal.itscl.adaptor.Adapter;
-import fr.lip6.move.gal.itscl.application.IRunner;
-import fr.lip6.move.gal.itscl.application.ISolverSeq;
+import fr.lip6.move.gal.itscl.modele.IRunner;
+import fr.lip6.move.gal.itscl.modele.ISolverSeq;
 
 public class InteractApplication {
 
