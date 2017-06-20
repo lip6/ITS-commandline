@@ -11,13 +11,13 @@ public class Adapter implements ISolverSeq {
 		this.runner = r;
 	}
 
-	public int isComplete() {
+	public int hasComplete() {
 		return runner.taskDone() ? 0 : 1;
 	}
 
 	public Integer call() throws Exception {
 		runner.solve();
-		return isComplete();
+		return hasComplete();
 
 	}
 

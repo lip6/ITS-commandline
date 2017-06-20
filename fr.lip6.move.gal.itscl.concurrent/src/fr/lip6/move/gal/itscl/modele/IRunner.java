@@ -13,7 +13,7 @@ public interface IRunner {
 
 	public Specification getSpec();
 
-	public Set<String> doneProps();
+	public Set<String> getDoneProps();
 
 	public Boolean taskDone();
 

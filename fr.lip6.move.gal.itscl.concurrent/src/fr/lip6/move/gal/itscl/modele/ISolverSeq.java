@@ -4,6 +4,6 @@ import java.util.concurrent.Callable;
 
 public interface ISolverSeq extends Callable<Integer> {
 
-	public int isComplete();
+	public int hasComplete();
 
 }

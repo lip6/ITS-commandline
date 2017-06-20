@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-public class Listener implements IListener {
+public class Listener implements IListener, Runnable {
 	protected final PipedInputStream pin;
 
 	protected PipedOutputStream pout = null;
@@ -40,6 +40,10 @@ public class Listener implements IListener {
 			System.out.println("Problemo uno fermento dilistener");
 			e.printStackTrace();
 		}
+	}
+
+	public void run() {
+		
 	}
 
 }

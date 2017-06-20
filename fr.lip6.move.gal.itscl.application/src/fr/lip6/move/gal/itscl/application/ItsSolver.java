@@ -1,5 +1,6 @@
 package fr.lip6.move.gal.itscl.application;
 
+import fr.lip6.move.gal.itscl.modele.IListener;
 import fr.lip6.move.gal.itscl.modele.ISolverSeq;
 import fr.lip6.move.gal.itstools.CommandLine;
 
@@ -7,10 +8,15 @@ public abstract class ItsSolver implements ISolverSeq {
 
 	private final CommandLine cl;
 	protected final ProblemSS p;
+	protected IListener listener;
 
 	public ItsSolver(ProblemSS p, CommandLine cl) {
 		this.cl = cl;
 		this.p = p;
+	}
+	
+	public void setListener(IListener l){
+		this.listener=l;
 	}
 
 	public CommandLine getCmd() {
