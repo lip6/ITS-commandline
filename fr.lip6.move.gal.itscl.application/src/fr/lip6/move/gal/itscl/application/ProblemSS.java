@@ -32,4 +32,11 @@ public class ProblemSS extends Problem {
 		return timeout;
 	}
 
+	@Override
+	public void configure(Specification spec) {
+		// one hour timeout by default
+		configure(spec, 3600);
+		
+	}
+
 }

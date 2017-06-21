@@ -6,7 +6,7 @@ public abstract class Problem implements IProblem {
 
 	protected Specification spec;
 
-	public void configure(Specification spec) {
+	public void configue(Specification spec) {
 		this.spec = spec;
 	}
 

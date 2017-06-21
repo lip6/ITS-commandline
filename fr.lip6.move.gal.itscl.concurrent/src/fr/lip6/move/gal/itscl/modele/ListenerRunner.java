@@ -6,13 +6,13 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-public class Listener implements IListener, Runnable {
+public class ListenerRunner implements IListener, Runnable {
 	protected final PipedInputStream pin;
 
 	protected PipedOutputStream pout = null;
 	protected BufferedReader in;
 
-	public Listener(int pipeSize) {
+	public ListenerRunner(int pipeSize) {
 
 		this.pin = new PipedInputStream(pipeSize);
 		try {

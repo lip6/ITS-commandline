@@ -1,5 +1,6 @@
 package fr.lip6.move.gal.itscl.application;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -101,7 +102,7 @@ public class Application implements IApplication {
 		Specification spec = SerializationUtil.fileToGalSystem(inputff);
 		System.out.println(
 				"Successfully read input file : " + inputff + " in " + (time - System.currentTimeMillis()) + " ms.");
-
+       
 		time = System.currentTimeMillis();
 		ProblemSS p = loadModel(pwd, spec, tool);
 		System.out.println("Simplifications done in " + (time - System.currentTimeMillis()) + " ms.");
@@ -145,7 +146,15 @@ public class Application implements IApplication {
 		return p;
 	}
 
-	// On produit un fichier de modèle pour l'outil ligne de commande
+	/**
+	 * // On produit un fichier de modèle pour l'outil ligne de commande
+	 * @param spec
+	 * @param cwd
+	 * @param modelName
+	 * @param tool
+	 * @return
+	 * @throws IOException
+	 */
 	public CommandLine getCmdLine(Specification spec, String cwd, String modelName, Tool tool) throws IOException {
 
 		String outpath = cwd + "/" + modelName + ".gal";
