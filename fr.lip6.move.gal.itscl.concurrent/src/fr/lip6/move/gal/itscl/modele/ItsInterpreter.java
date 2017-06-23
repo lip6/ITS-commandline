@@ -6,15 +6,16 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-public abstract class ListenerRunner implements IListener {
-	protected final PipedInputStream pin;
+public class ItsInterpreter {
+	private final PipedInputStream pin;
 
-	protected PipedOutputStream pout = null;
-	protected BufferedReader in;
+	private PipedOutputStream pout = null;
+	private BufferedReader in;
 
-	public ListenerRunner(int pipeSize) {
+	public ItsInterpreter(int pipeSize) {
 
 		this.pin = new PipedInputStream(pipeSize);
+
 		try {
 			this.pout = new PipedOutputStream(pin);
 		} catch (IOException e1) {
@@ -32,6 +33,10 @@ public abstract class ListenerRunner implements IListener {
 		return pin;
 	}
 
+	public String readLine() throws IOException {
+		return in.readLine();
+	}
+
 	public void closePinPout() {
 		try {
 			pin.close();
@@ -42,5 +47,8 @@ public abstract class ListenerRunner implements IListener {
 		}
 	}
 
+	public void closeIn() throws IOException {
+		in.close();
+	}
 
 }

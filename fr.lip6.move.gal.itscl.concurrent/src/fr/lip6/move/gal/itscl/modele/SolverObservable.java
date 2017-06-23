@@ -10,26 +10,29 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class SolverObservable implements ISolverObservable {
 
 	private Set<ISolverSeq> obs = new HashSet<>();
 	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
-
+	private InterpreteObservable interp;
+	
 	public void attach(ISolverSeq o) {
 		obs.add(o);
 	}
-	
+
 	public void detach(ISolverSeq o) {
 		obs.remove(o);
 	}
 
 	/**
-	 * Shutdown all threads that still running
-	 * assure that they really been canceled
+	 * Shutdown all threads that still running assure that they really been
+	 * canceled call method to kill the interpreters of each runner
 	 */
 	public void killAll() {
+
 		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a
 		if (notFinished == null) {
 			System.out.println("they all complete");// fini
@@ -39,21 +42,28 @@ public class SolverObservable implements ISolverObservable {
 				o.cancel(true);
 			}
 		}
+		
+		interp.notify();
 	}
 
 	/**
-	 * wait till a solver has finished
-	 * if it done completely the task : kill other solvers
-	 * if not repeat the process
+	 * wait a least five minutes till all interpeters have terminate
+	 */
+	
+
+	/**
+	 * wait till a solver has finish. if it done completely the task : kill all
+	 * the solvers and their interpreters, if not : repeat the process
 	 */
 	public Boolean call() {
 
 		CompletionService<Integer> runSolvers = new ExecutorCompletionService<Integer>(executor);
-		
+
 		for (ISolverSeq o : obs) {
 			fsolvers.add(runSolvers.submit(o));
 		}
 
+	
 		int nbSolver = obs.size(), i = 0;
 
 		do {
@@ -72,7 +82,6 @@ public class SolverObservable implements ISolverObservable {
 			}
 		} while (++i < nbSolver);
 
-		System.out.println("Problem not solved");
 		return false;
 	}
 
