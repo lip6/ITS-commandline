@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-public class ListenerRunner implements IListener, Runnable {
+public abstract class ListenerRunner implements IListener {
 	protected final PipedInputStream pin;
 
 	protected PipedOutputStream pout = null;
@@ -42,8 +42,5 @@ public class ListenerRunner implements IListener, Runnable {
 		}
 	}
 
-	public void run() {
-		
-	}
 
 }

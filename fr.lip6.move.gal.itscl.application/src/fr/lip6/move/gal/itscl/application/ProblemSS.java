@@ -19,7 +19,7 @@ public class ProblemSS extends Problem {
 		this.spec = spec;
 		this.timeout = timeout;
 	}
-
+	
 	public Tool getTool() {
 		return tool;
 	}
@@ -32,11 +32,6 @@ public class ProblemSS extends Problem {
 		return timeout;
 	}
 
-	@Override
-	public void configure(Specification spec) {
-		// one hour timeout by default
-		configure(spec, 3600);
-		
-	}
+	
 
 }

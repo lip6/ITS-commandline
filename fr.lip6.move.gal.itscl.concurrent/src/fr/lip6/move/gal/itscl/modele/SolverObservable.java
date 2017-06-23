@@ -20,17 +20,20 @@ public class SolverObservable implements ISolverObservable {
 	public void attach(ISolverSeq o) {
 		obs.add(o);
 	}
-
+	
 	public void detach(ISolverSeq o) {
 		obs.remove(o);
 	}
 
+	/**
+	 * Shutdown all threads that still running
+	 * assure that they really been canceled
+	 */
 	public void killAll() {
 		List<Runnable> notFinished = executor.shutdownNow(); // savoir qui a
 		if (notFinished == null) {
-			System.out.println("ts ont fini");// fini
+			System.out.println("they all complete");// fini
 		}
-		
 		for (Future<Integer> o : fsolvers) {
 			if (!o.isDone()) {
 				o.cancel(true);
@@ -38,12 +41,17 @@ public class SolverObservable implements ISolverObservable {
 		}
 	}
 
+	/**
+	 * wait till a solver has finished
+	 * if it done completely the task : kill other solvers
+	 * if not repeat the process
+	 */
 	public Boolean call() {
 
-		CompletionService<Integer> completionService = new ExecutorCompletionService<Integer>(executor);
-
+		CompletionService<Integer> runSolvers = new ExecutorCompletionService<Integer>(executor);
+		
 		for (ISolverSeq o : obs) {
-			fsolvers.add(completionService.submit(o));
+			fsolvers.add(runSolvers.submit(o));
 		}
 
 		int nbSolver = obs.size(), i = 0;
@@ -51,7 +59,7 @@ public class SolverObservable implements ISolverObservable {
 		do {
 			try {
 				// waiting for the first solver to terminate
-				Future<Integer> solverDone = completionService.take();
+				Future<Integer> solverDone = runSolvers.take();
 				// Test if it has completed with no error
 				if (solverDone.get() == 0) {
 					killAll();
