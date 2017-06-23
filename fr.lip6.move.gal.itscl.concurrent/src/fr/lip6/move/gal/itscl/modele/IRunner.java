@@ -18,5 +18,4 @@ public interface IRunner {
 
 	public Boolean taskDone();
 
-	public IListener getInterpreter();
 }
