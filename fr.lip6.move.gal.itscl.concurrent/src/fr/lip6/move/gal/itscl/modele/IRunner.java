@@ -16,6 +16,8 @@ public interface IRunner {
 
 	public void solve();
 
+	public void setInterprete(InterpreteObservable ob);
+	
 	public Boolean taskDone();
 
 }

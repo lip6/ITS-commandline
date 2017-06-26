@@ -16,8 +16,12 @@ public class SolverObservable implements ISolverObservable {
 	private Set<ISolverSeq> obs = new HashSet<>();
 	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
-	private InterpreteObservable interp;
-	
+	private Synchronizer sync;
+
+	public SolverObservable(Synchronizer sync) {
+		this.sync = sync;
+	}
+
 	public void attach(ISolverSeq o) {
 		obs.add(o);
 	}
@@ -41,14 +45,8 @@ public class SolverObservable implements ISolverObservable {
 				o.cancel(true);
 			}
 		}
-		
-		interp.notify();
+		sync.waitInterpreters();
 	}
-
-	/**
-	 * wait a least five minutes till all interpeters have terminate
-	 */
-	
 
 	/**
 	 * wait till a solver has finish. if it done completely the task : kill all
@@ -62,26 +60,24 @@ public class SolverObservable implements ISolverObservable {
 			fsolvers.add(runSolvers.submit(o));
 		}
 
-	
 		int nbSolver = obs.size(), i = 0;
-
+		boolean result= false;
 		do {
 			try {
 				// waiting for the first solver to terminate
 				Future<Integer> solverDone = runSolvers.take();
 				// Test if it has completed with no error
 				if (solverDone.get() == 0) {
-					killAll();
-					return true;
+					result=true;
+					break;
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 				return false;
-
 			}
 		} while (++i < nbSolver);
-
-		return false;
+		killAll();
+		return result;
 	}
 
 }

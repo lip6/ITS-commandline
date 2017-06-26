@@ -2,9 +2,7 @@ package fr.lip6.move.gal.itscl.modele;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
@@ -22,6 +20,7 @@ public class ItsInterpreter {
 			this.pout = new PipedOutputStream(pin);
 		} catch (IOException e1) {
 			e1.printStackTrace();
+			System.out.println("error pipou");
 		}
 		this.in = new BufferedReader(new InputStreamReader(pin));
 
@@ -36,9 +35,6 @@ public class ItsInterpreter {
 		return pin;
 	}
 
-	public String readLine() throws IOException {
-		return in.readLine();
-	}
 
 	public void closePinPout() {
 		try {
@@ -49,7 +45,9 @@ public class ItsInterpreter {
 			e.printStackTrace();
 		}
 	}
-
+	public BufferedReader getIn(){
+		return in;
+	}
 	public void closeIn() throws IOException {
 		in.close();
 	}
