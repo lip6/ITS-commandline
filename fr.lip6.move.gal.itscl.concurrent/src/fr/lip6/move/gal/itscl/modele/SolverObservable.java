@@ -10,17 +10,15 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 
 public class SolverObservable implements ISolverObservable {
 
 	private Set<ISolverSeq> obs = new HashSet<>();
 	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
-	private Synchronizer sync;
+	private Semaphore interpWriteOut = new Semaphore(0);
 
-	public SolverObservable(Synchronizer sync) {
-		this.sync = sync;
-	}
 
 	public void attach(ISolverSeq o) {
 		obs.add(o);
@@ -29,6 +27,28 @@ public class SolverObservable implements ISolverObservable {
 	public void detach(ISolverSeq o) {
 		obs.remove(o);
 	}
+	
+	
+	/**
+	 * {@link SolverObservable} waits till all interpreters end correctly
+	 */
+	public void waitInterpreters() {
+
+		try {
+			interpWriteOut.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Notify the solver that interpreters have complete 
+	 */
+	public void notifySolver() {
+		interpWriteOut.release();
+	}
+	
 
 	/**
 	 * Shutdown all threads that still running assure that they really been
@@ -45,11 +65,11 @@ public class SolverObservable implements ISolverObservable {
 				o.cancel(true);
 			}
 		}
-		sync.waitInterpreters();
+		waitInterpreters();
 	}
 
 	/**
-	 * wait till a solver has finish. if it done completely the task : kill all
+	 * wait till a solver finishes. if it done completely the task : kill all
 	 * the solvers and their interpreters, if not : repeat the process
 	 */
 	public Boolean call() {

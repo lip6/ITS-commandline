@@ -4,6 +4,13 @@ import java.io.IOException;
 import java.util.Set;
 
 import fr.lip6.move.gal.Specification;
+import fr.lip6.move.gal.itscl.interprete.InterpreteObservable;
+
+
+/**
+ *  
+ *
+ */
 
 public interface IRunner {
 
@@ -19,5 +26,5 @@ public interface IRunner {
 	public void setInterprete(InterpreteObservable ob);
 	
 	public Boolean taskDone();
-
+	
 }

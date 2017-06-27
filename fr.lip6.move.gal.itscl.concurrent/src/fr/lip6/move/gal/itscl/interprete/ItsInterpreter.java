@@ -1,4 +1,4 @@
-package fr.lip6.move.gal.itscl.modele;
+package fr.lip6.move.gal.itscl.interprete;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,6 +6,11 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
+
+/**
+ * 
+ *
+ */
 public class ItsInterpreter {
 	private final PipedInputStream pin;
 
