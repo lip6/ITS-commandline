@@ -19,7 +19,6 @@ public class SolverObservable implements ISolverObservable {
 	private ExecutorService executor = Executors.newCachedThreadPool();
 	private Semaphore interpWriteOut = new Semaphore(0);
 
-
 	public void attach(ISolverSeq o) {
 		obs.add(o);
 	}
@@ -27,8 +26,7 @@ public class SolverObservable implements ISolverObservable {
 	public void detach(ISolverSeq o) {
 		obs.remove(o);
 	}
-	
-	
+
 	/**
 	 * {@link SolverObservable} waits till all interpreters end correctly
 	 */
@@ -40,15 +38,13 @@ public class SolverObservable implements ISolverObservable {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 	/**
-	 * Notify the solver that interpreters have complete 
+	 * Notify the solver that interpreters have complete
 	 */
 	public void notifySolver() {
 		interpWriteOut.release();
 	}
-	
 
 	/**
 	 * Shutdown all threads that still running assure that they really been
@@ -65,6 +61,7 @@ public class SolverObservable implements ISolverObservable {
 				o.cancel(true);
 			}
 		}
+
 		waitInterpreters();
 	}
 
@@ -80,22 +77,24 @@ public class SolverObservable implements ISolverObservable {
 			fsolvers.add(runSolvers.submit(o));
 		}
 
-		int nbSolver = obs.size(), i = 0;
-		boolean result= false;
+		boolean result = false;
 		do {
+
 			try {
 				// waiting for the first solver to terminate
 				Future<Integer> solverDone = runSolvers.take();
+				System.out.println("first one ____________________!");
+
 				// Test if it has completed with no error
 				if (solverDone.get() == 0) {
-					result=true;
+					result = true;
 					break;
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 				return false;
 			}
-		} while (++i < nbSolver);
+		} while (!result);
 		killAll();
 		return result;
 	}
