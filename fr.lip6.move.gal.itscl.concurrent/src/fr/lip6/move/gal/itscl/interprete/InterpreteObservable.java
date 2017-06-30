@@ -20,7 +20,7 @@ public class InterpreteObservable implements IInterpreteObservable {
 	public Boolean call() {
 		try {
 			// notify qu'ils ont été lancés avant
-			//Thread.sleep(1000);
+			so.wakeMeUp();
 			
 			for (int i = 0; i < interpTh.size(); i++) {
 				Thread th = interpTh.get(i);

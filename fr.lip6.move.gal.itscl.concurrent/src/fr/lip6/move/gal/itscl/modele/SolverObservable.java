@@ -18,6 +18,7 @@ public class SolverObservable implements ISolverObservable {
 	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
 	private Semaphore interpWriteOut = new Semaphore(0);
+	private Semaphore stopInterpretation = new Semaphore(0);
 
 	public void attach(ISolverSeq o) {
 		obs.add(o);
@@ -83,11 +84,11 @@ public class SolverObservable implements ISolverObservable {
 			try {
 				// waiting for the first solver to terminate
 				Future<Integer> solverDone = runSolvers.take();
-				System.out.println("first one ____________________!");
 
 				// Test if it has completed with no error
 				if (solverDone.get() == 0) {
 					result = true;
+					wakeInterpreter();
 					break;
 				}
 			} catch (InterruptedException | ExecutionException e) {
@@ -97,6 +98,14 @@ public class SolverObservable implements ISolverObservable {
 		} while (!result);
 		killAll();
 		return result;
+	}
+
+	public void wakeMeUp() throws InterruptedException {
+		stopInterpretation.acquire();
+	}
+
+	public void wakeInterpreter() {
+		stopInterpretation.release();
 	}
 
 }
