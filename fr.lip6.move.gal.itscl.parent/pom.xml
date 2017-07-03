@@ -18,6 +18,11 @@
 	<description>Command-line interaction with code built for Eclipse</description>
 
 	<modules>
+	
+		<module>../fr.lip6.move.gal.itscl.concurrent</module>
+		<module>../fr.lip6.move.gal.itscl.adaptors</module>
+		<module>../fr.lip6.move.gal.itscl.pnmcc.adaptors</module>
+		
 		<!-- Application plugin -->
 		<module>../fr.lip6.move.gal.itscl.application</module>
 		<!-- feature plugin -->
@@ -124,7 +129,7 @@
 							<id>org.eclipse.jdt.core</id>
 							<removeAll />
 						</filter>
-						
+
 						<!-- prevent resolution of xtend -->
 						<filter>
 							<type>eclipse-plugin</type>
