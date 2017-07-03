@@ -18,6 +18,7 @@ import fr.lip6.move.gal.Property;
 import fr.lip6.move.gal.SafetyProp;
 import fr.lip6.move.gal.Specification;
 import fr.lip6.move.gal.instantiate.GALRewriter;
+import fr.lip6.move.gal.itscl.interpreter.InterpreteObservable;
 import fr.lip6.move.gal.itscl.modele.SolverObservable;
 import fr.lip6.move.gal.itstools.CommandLine;
 import fr.lip6.move.gal.itstools.CommandLineBuilder;
@@ -112,21 +113,28 @@ public class Application implements IApplication {
 		System.out.println("Built GAL and property files in " + (time - System.currentTimeMillis()) + " ms.");
 		SolverObservable superRunner = new SolverObservable();
 		exec = Executors.newSingleThreadExecutor();
-
+		InterpreteObservable interpRunner = new InterpreteObservable(superRunner);
 		SolverSeq s = new SolverSeq(p, cl);
+		
 		superRunner.attach(s);
 		// run les solvers
-		// Listener lst= new Listener();
-		// superRunner.configureListener(lst);
 		FutureTask<Boolean> executeRunner = new FutureTask<>(superRunner);
 		Thread futureTh = new Thread(executeRunner);
-		// exec.submit(superRunner);
+		FutureTask<Boolean> executeInterp = new FutureTask<>(interpRunner);
+		Thread futureTh2 = new Thread(executeInterp);
+		
 		futureTh.start();
+		futureTh2.start();
+		
 		Boolean result = executeRunner.get();
+		Boolean result2 = executeInterp.get();
+
 		if (futureTh != null)
 			futureTh.join();
-		System.out.println("Operation reussi ? " + result);
-		return result ? IApplication.EXIT_OK : 1;
+		if (futureTh2 != null)
+			futureTh2.join();
+		System.out.println("Operation reussi ? " + result + ". And Interpreter ? "+result2);
+		return IApplication.EXIT_OK;
 	}
 
 	// Traitement du problème : transformations + simplifications

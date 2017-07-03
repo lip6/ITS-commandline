@@ -17,7 +17,7 @@ public class SolverObservable implements ISolverObservable {
 	private Set<ISolverSeq> obs = new HashSet<>();
 	private List<Future<Integer>> fsolvers = new ArrayList<Future<Integer>>();
 	private ExecutorService executor = Executors.newCachedThreadPool();
-	private Semaphore interpWriteOut = new Semaphore(0);
+	private Semaphore interpreteComplete = new Semaphore(0);
 	private Semaphore stopInterpretation = new Semaphore(0);
 
 	public void attach(ISolverSeq o) {
@@ -28,28 +28,22 @@ public class SolverObservable implements ISolverObservable {
 		obs.remove(o);
 	}
 
-	/**
-	 * {@link SolverObservable} waits till all interpreters end correctly
-	 */
-	public void waitInterpreters() {
+	public void interpreterDone() {
 
 		try {
-			interpWriteOut.acquire();
+			interpreteComplete.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * Notify the solver that interpreters have complete
-	 */
 	public void notifySolver() {
-		interpWriteOut.release();
+		interpreteComplete.release();
 	}
 
 	/**
-	 * Shutdown all threads that still running assure that they really been
-	 * canceled call method to kill the interpreters of each runner
+	 * Try to shutdown immediately all ISolverSeq thread that still running. It
+	 * assure that they really been canceled.
 	 */
 	public void killAll() {
 
@@ -62,13 +56,21 @@ public class SolverObservable implements ISolverObservable {
 				o.cancel(true);
 			}
 		}
+		// Wait interpreters to finish interpret the last results
+		interpreterDone();
+	}
 
-		waitInterpreters();
+	public void waitSolver() throws InterruptedException {
+		stopInterpretation.acquire();
+	}
+
+	public void notifyInterpreter() {
+		stopInterpretation.release();
 	}
 
 	/**
-	 * wait till a solver finishes. if it done completely the task : kill all
-	 * the solvers and their interpreters, if not : repeat the process
+	 * Run all recorded solvers. Wait for a result, if solver did complete well:
+	 * kill 'em all (solvers), if not : repeat wait for the next result
 	 */
 	public Boolean call() {
 
@@ -78,34 +80,30 @@ public class SolverObservable implements ISolverObservable {
 			fsolvers.add(runSolvers.submit(o));
 		}
 
-		boolean result = false;
+		int i = 0;
 		do {
 
 			try {
-				// waiting for the first solver to terminate
+				// waiting for the first solver to complete
 				Future<Integer> solverDone = runSolvers.take();
 
-				// Test if it has completed with no error
+				// Test if it did complete well
 				if (solverDone.get() == 0) {
-					result = true;
-					wakeInterpreter();
 					break;
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 				return false;
 			}
-		} while (!result);
+		} while (i++ < obs.size());
+
+		// Wake interpreterObservable, it joins all interpreters in order to
+		// ensure they have completed well
+		notifyInterpreter();
+
 		killAll();
-		return result;
-	}
 
-	public void wakeMeUp() throws InterruptedException {
-		stopInterpretation.acquire();
-	}
-
-	public void wakeInterpreter() {
-		stopInterpretation.release();
+		return (i == obs.size()) ? false : true;
 	}
 
 }

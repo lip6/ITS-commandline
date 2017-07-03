@@ -1,4 +1,4 @@
-package fr.lip6.move.gal.itscl.interprete;
+package fr.lip6.move.gal.itscl.interpreter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,10 +7,9 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
 /**
- * 
- *
+ * Interpreters that uses File I/O stream
  */
-public class FileStreamInterprete{
+public class FileStreamInterprete {
 
 	private final PipedInputStream pin;
 
@@ -48,7 +47,6 @@ public class FileStreamInterprete{
 			e.printStackTrace();
 		}
 	}
-	
 
 	public String getWrittenData() {
 		try {
@@ -59,8 +57,8 @@ public class FileStreamInterprete{
 		return null;
 	}
 
-	public void closeIn() throws IOException{
+	public void closeIn() throws IOException {
 		in.close();
 	}
-	
+
 }
