@@ -1,4 +1,11 @@
+# Deprecated
+
+As of May 2022, this repository source code has been merged into https://github.com/lip6/ITSTools
+
+This project is now archived.
+
 # ITS-commandline
+
 A project to host command-line version of ITS-Tools components embedded in eclipse
 
 See download page : https://yanntm.github.io/ITS-commandline
